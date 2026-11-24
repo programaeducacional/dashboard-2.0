@@ -1,9 +1,9 @@
-/* Painel PES 2.0 · pesquisas_internas.js · pesquisas de satisfação das áreas internas com o PES.
-   Formato: campanhas[] (uma por envio) e respostas[] (nota 0–10 + comentário). O n8n reescreve este arquivo a cada resposta recebida. */
+/* Painel PES 2.0 · pesquisas_internas.js · gerado pelo n8n em 24/11/2026, 08:56:27 */
+/* Pesquisas de satisfação das áreas internas com o PES: campanhas[] e respostas[] (nota 0–10 + comentário). O n8n reescreve este arquivo a cada campanha e resposta. */
 window.PES_INTERNAS = {
  "meta": {
-  "gerado_em": "2026-11-19T14:12:22-03:00",
-  "fonte": "Histórico Microsoft Forms (5 planilhas) — a partir daqui, respostas do pesquisa.html via n8n",
+  "gerado_em": "2026-11-24T08:56:27-03:00",
+  "fonte": "Painel PES · n8n (pesquisas internas)",
   "versao": 1
  },
  "campanhas": [
@@ -56,6 +56,21 @@ window.PES_INTERNAS = {
    "period_label": "maio, junho e julho de 2026",
    "origem": "Microsoft Forms",
    "convites": null
+  },
+  {
+   "id": "1bbb322b-4946-4fb6-b81d-cc842854daa6",
+   "titulo": "3º trimestre de 2026",
+   "ano": 2026,
+   "period_start": "2026-07-01",
+   "period_end": "2026-09-30",
+   "period_label": "julho, agosto e setembro de 2026",
+   "prazo": "2026-12-09",
+   "origem": "Painel PES",
+   "convites": 1,
+   "areas": [
+    "PES"
+   ],
+   "enviada_em": "2026-11-24T08:56:27"
   }
  ],
  "respostas": [
