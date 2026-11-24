@@ -1,8 +1,8 @@
-/* Painel PES 2.0 · pesquisas_internas.js · gerado pelo n8n em 24/11/2026, 10:33:20 */
+/* Painel PES 2.0 · pesquisas_internas.js · gerado pelo n8n em 24/11/2026, 10:34:10 */
 /* Pesquisas de satisfação das áreas internas com o PES: campanhas[] e respostas[] (nota 0–10 + comentário). O n8n reescreve este arquivo a cada campanha e resposta. */
 window.PES_INTERNAS = {
  "meta": {
-  "gerado_em": "2026-11-24T10:33:20-03:00",
+  "gerado_em": "2026-11-24T10:34:10-03:00",
   "fonte": "Painel PES · n8n (pesquisas internas)",
   "versao": 1
  },
@@ -308,6 +308,18 @@ window.PES_INTERNAS = {
    "area": "PES",
    "area_id": "1a797383-04a1-4dc5-8a6c-080b7369acb7",
    "nome": null,
+   "nota": 10,
+   "comentario": "Sem sugestões no momento."
+  },
+  {
+   "id": "29452190-be1e-4af2-825c-8fb4b901f3ec",
+   "response_id": "29452190-be1e-4af2-825c-8fb4b901f3ec",
+   "invitation_id": "75ed15c2-facd-42c3-b6f8-5757269f39c7:1a797383-04a1-4dc5-8a6c-080b7369acb7",
+   "campanha": "75ed15c2-facd-42c3-b6f8-5757269f39c7",
+   "data": "2026-11-24T10:34:10",
+   "area": "PES",
+   "area_id": "1a797383-04a1-4dc5-8a6c-080b7369acb7",
+   "nome": "Isa",
    "nota": 10,
    "comentario": "Sem sugestões no momento."
   }
