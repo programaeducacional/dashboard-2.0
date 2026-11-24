@@ -1664,7 +1664,7 @@ a.btn-leitura { text-decoration: none; color: var(--fg); }
             <li><button type="button" data-ev-passo="2"><span class="n">2</span><span><b>Preparar convite</b><small>Mensagem e personalização</small></span></button></li>
             <li><button type="button" data-ev-passo="3"><span class="n">3</span><span><b>Revisar e enviar</b><small>Validação da equipe PES</small></span></button></li>
           </ol>
-          <div class="ev-aviso" id="ev-demo"><b>Modo demonstração.</b> Teste todas as etapas e veja a pesquisa; nenhum e-mail sai daqui. Para enviar de verdade, ative a produção em Configurações.</div>
+          <div class="ev-aviso" id="ev-demo"><b>Ainda sem conexão com o n8n.</b> O envio aqui é só uma simulação. Para enviar de verdade, cole o link do n8n em Configurações.</div>
           <div class="ev-erro" id="ev-erro" role="alert" tabindex="-1" hidden></div>
           <div class="ev-ok" id="ev-ok" role="status" hidden></div>
           <div class="corpo rolagem ev-corpo">
@@ -1737,13 +1737,10 @@ a.btn-leitura { text-decoration: none; color: var(--fg); }
         <footer><button type="button" class="ev-btn" data-ev-fecha>Cancelar</button><button type="button" class="ev-btn prim" id="ev-salvar-areas">Salvar cadastro</button></footer>
       </dialog>
       <dialog class="ev-dlg" id="ev-dlg-config" aria-labelledby="ev-t-config">
-        <header><div><h2 id="ev-t-config">Conexão com o n8n</h2><p>Endereços usados para enviar os convites e montar os links.</p></div><button type="button" class="fechar" data-ev-fecha aria-label="Fechar"><svg viewBox="0 0 12 12"><path d="M1 1l10 10M11 1 1 11"/></svg></button></header>
+        <header><div><h2 id="ev-t-config">Conexão com o n8n</h2><p>Só é preciso fazer isto uma vez neste computador.</p></div><button type="button" class="fechar" data-ev-fecha aria-label="Fechar"><svg viewBox="0 0 12 12"><path d="M1 1l10 10M11 1 1 11"/></svg></button></header>
         <div class="ev-dlg-corpo"><div class="ev-erro" id="ev-erro-config" role="alert" hidden></div>
-          <label class="ev-campo"><span>Modo</span><select id="ev-c-modo"><option value="demo">Demonstração · nenhum envio real</option><option value="production">Produção · enviar pelo n8n</option></select></label>
-          <label class="ev-campo"><span>Webhook de envio</span><input id="ev-c-webhook" type="url" placeholder="https://SEU-N8N/webhook/pes-pesquisa-interna/envio"><small>URL de produção do webhook “Envio · campanha” do workflow.</small></label>
-          <label class="ev-campo"><span>Endereço da pesquisa</span><input id="ev-c-url" type="url"><small>O pesquisa.html publicado junto com o painel.</small></label>
-          <label class="ev-campo"><span>Token do painel</span><input id="ev-c-token" type="password" autocomplete="off" spellcheck="false" placeholder="Só para enviar em produção"><small>Vai como “Authorization: Bearer”. Não fica salvo no navegador nem no backup.</small></label></div>
-        <footer><span class="nota">As credenciais de e-mail e do GitHub ficam no n8n.</span><button type="button" class="ev-btn prim" id="ev-salvar-config">Salvar</button></footer>
+          <label class="ev-campo"><span>Link do n8n para envio</span><input id="ev-c-webhook" type="url" placeholder="https://.../webhook/pes-pesquisa-interna/envio"><small>No n8n, abra o nó “Envio da pesquisa”, clique em “Production URL” e copie o link. Deixe vazio para só simular.</small></label></div>
+        <footer><button type="button" class="ev-btn prim" id="ev-salvar-config">Salvar</button></footer>
       </dialog>
       <div class="ev-toast" id="ev-toast" role="status" aria-live="polite" hidden></div>
     </section>
@@ -4798,7 +4795,7 @@ $$('#chips-grupo .chip-filtro').forEach(function (b) { b.onclick = function () {
 
   var state = { version: 1, areas: AREAS_INICIAIS.map(function (a) { return Object.assign({}, a); }), selectedIds: [], campaign: campanhaNova(),
     email: Object.assign({}, EMAIL_PADRAO), settings: { mode: 'demo', dispatchWebhook: '', surveyBaseUrl: urlPesquisa() }, history: [], catalogEdited: false, catalogRevision: 1 };
-  var passo = 1, token = '', rascunho = [], padraoCarregado = false, enviando = false, pendente = null, revisao = 0, concluido = false, previaId = '', iniciado = false, tmToast;
+  var passo = 1, rascunho = [], padraoCarregado = false, enviando = false, pendente = null, revisao = 0, concluido = false, previaId = '', iniciado = false, tmToast;
 
   /* ---------- utilidades ---------- */
   function dataOk(s) { if (!/^\d{4}-\d{2}-\d{2}$/.test(s || '')) return false; var d = new Date(s + 'T12:00:00Z'); return !isNaN(d) && d.toISOString().slice(0, 10) === s; }
@@ -4843,7 +4840,8 @@ $$('#chips-grupo .chip-filtro').forEach(function (b) { b.onclick = function () {
       var s = JSON.parse(localStorage.getItem(STORAGE) || 'null'); if (!s) return;
       var r = normaliza(s);
       // o endereço salvo pelo organizacao.html apontava para a página dele; aqui a pesquisa fica ao lado do painel
-      if (/organizacao\.html/i.test(r.settings.surveyBaseUrl)) r.settings.surveyBaseUrl = urlPesquisa();
+      r.settings.surveyBaseUrl = urlPesquisa();
+      r.settings.mode = httpsOk(r.settings.dispatchWebhook) ? 'production' : 'demo';
       state = r;
     } catch (e) { $('ev-salvo').textContent = 'Rascunho local indisponível · exporte um backup'; }
   }
@@ -4907,7 +4905,7 @@ $$('#chips-grupo .chip-filtro').forEach(function (b) { b.onclick = function () {
       '<div><span>Período avaliado</span><b>' + dataBR(c.period_start) + ' a ' + dataBR(c.period_end) + '</b></div>' +
       '<div><span>Prazo de resposta</span><b>' + dataBR(c.deadline) + '</b></div>' +
       '<div><span>Áreas</span><b>' + sel.length + (sel.length === 1 ? ' área' : ' áreas') + (semEmail ? ' <span class="falta">· ' + semEmail + ' sem e-mail</span>' : '') + '</b></div>' +
-      '<div><span>Envio</span><b class="' + (prod && (!httpsOk(state.settings.dispatchWebhook) || !token) ? 'falta' : '') + '">' + (prod ? (httpsOk(state.settings.dispatchWebhook) ? (token ? 'Produção · pronto para enviar' : 'Produção · falta o token') : 'Produção · falta o webhook') : 'Demonstração') + '</b></div></div>';
+      '<div><span>Envio</span><b class="' + (prod ? '' : 'falta') + '">' + (prod ? 'Conectado ao n8n' : 'Simulação · sem link do n8n') + '</b></div></div>';
   }
   function renderPrevia() {
     var sel = selecionadas();
@@ -4929,13 +4927,13 @@ $$('#chips-grupo .chip-filtro').forEach(function (b) { b.onclick = function () {
     $('ev-dest').innerHTML = sel.map(function (x) {
       return '<div class="ev-dest"><div><b>' + esc(x.name) + '</b><small>' + esc(x.email || 'E-mail pendente · só demonstração') + '</small></div><a href="' + esc(linkPrevia(x)) + '" target="_blank" rel="noopener noreferrer">Ver pesquisa</a></div>';
     }).join('');
-    $('ev-ajuda').textContent = state.settings.mode === 'demo' ? 'Simulação: nenhum convite será enviado. Para enviar, ative a produção em Configurações.' :
-      'Ao aprovar, a campanha vai para o n8n, que cria um link por área, envia os e-mails e registra a campanha no painel.';
+    $('ev-ajuda').textContent = state.settings.mode === 'demo' ? 'Simulação: nenhum convite será enviado. Para enviar, cole o link do n8n em Configurações.' :
+      'Ao aprovar, o n8n envia um e-mail para cada área com o link da pesquisa e registra a campanha no painel.';
   }
   function renderModo() {
     var demo = state.settings.mode === 'demo';
     $('ev-demo').hidden = !demo;
-    $('ev-modo').textContent = demo ? 'Demonstração' : 'Produção'; $('ev-modo').classList.toggle('prod', !demo);
+    $('ev-modo').textContent = demo ? 'Simulação' : 'Conectado ao n8n'; $('ev-modo').classList.toggle('prod', !demo);
     $('ev-enviar').textContent = demo ? 'Simular envio' : 'Enviar convites';
   }
   function renderHist() {
@@ -5044,11 +5042,10 @@ $$('#chips-grupo .chip-filtro').forEach(function (b) { b.onclick = function () {
   /* ---------- envio ---------- */
   function payload() {
     var c = state.campaign;
-    return { event: 'pes.survey.dispatch', schema_version: '1.1',
-      campaign: { id: c.id, title: c.title.trim(), period_title: tituloPeriodo(), quarter: c.quarter, year: c.year, period_start: c.period_start, period_end: c.period_end, period_label: c.period_label.trim(), deadline: c.deadline },
-      recipients: selecionadas().map(function (a) { return { invitation_id: c.id + ':' + a.id, area_id: a.id, area: a.name, email: a.email.trim() }; }),
-      email_template: { subject: state.email.subject, body: state.email.body, button_label: state.email.button_label, html: emailHtml({ name: '{{tracker.area}}' }, '{{tracker.link}}') },
-      survey_base_url: state.settings.surveyBaseUrl, approved_at: c.approved_at || new Date().toISOString(), mode: 'production' };
+    return { campanha: { id: c.id, titulo: tituloPeriodo(), inicio: c.period_start, fim: c.period_end, periodo: c.period_label.trim(), prazo: c.deadline },
+      areas: selecionadas().map(function (a) { return { id: a.id, nome: a.name, email: a.email.trim() }; }),
+      email: { assunto: state.email.subject, html: emailHtml({ name: '{{tracker.area}}' }, '{{tracker.link}}') },
+      pesquisa_url: urlPesquisa(), resposta_url: state.settings.dispatchWebhook.replace(/\/envio\/?$/, '/resposta') };
   }
   function ocupado(sim) {
     enviando = sim;
@@ -5061,8 +5058,8 @@ $$('#chips-grupo .chip-filtro').forEach(function (b) { b.onclick = function () {
     concluido = true; $('ev-enviar').disabled = true;
     var sc = document.querySelector('.ev-corpo'); if (sc) sc.scrollTop = 0;
     var ok = $('ev-ok'); ok.hidden = false;
-    ok.innerHTML = '<h3>' + (demo ? 'Simulação concluída.' : 'Campanha recebida pelo n8n.') + '</h3><p>' + (demo ? 'O fluxo foi validado nesta tela. Nenhum e-mail foi enviado.' :
-      'Os convites foram aceitos e estão saindo agora. A campanha aparece no Analytics na próxima atualização do painel, e cada resposta entra assim que for enviada.') + '</p>' +
+    ok.innerHTML = '<h3>' + (demo ? 'Simulação concluída.' : 'Campanha entregue ao n8n.') + '</h3><p>' + (demo ? 'O fluxo foi validado nesta tela. Nenhum e-mail foi enviado.' :
+      'Os e-mails saem em instantes. A campanha aparece no Analytics em alguns minutos, e cada resposta entra assim que a área responder. Se algum e-mail não chegar, confira a aba Executions no n8n.') + '</p>' +
       '<button type="button" class="ev-btn prim" id="ev-nova">Preparar nova campanha</button>';
     $('ev-nova').onclick = function () { state.campaign = campanhaNova(); state.selectedIds = []; mudou(); sincroniza(); $('ev-enviar').disabled = false; ir(1); };
   }
@@ -5070,35 +5067,21 @@ $$('#chips-grupo .chip-filtro').forEach(function (b) { b.onclick = function () {
     if (enviando || concluido) return;
     var e = valida1().concat(valida2()), s = state.settings;
     if (!$('ev-aprovo').checked) e.push('Marque a confirmação de revisão para continuar.');
-    if (s.mode === 'production') {
-      if (!httpsOk(s.dispatchWebhook)) e.push('Configure a URL HTTPS do webhook de envio (Configurações).');
-      if (!httpsOk(s.surveyBaseUrl)) e.push('Configure a URL HTTPS pública da pesquisa (Configurações).');
-      if (!token.trim()) e.push('Informe o token do painel em Configurações.');
-      if (dataOk(state.campaign.deadline) && Date.now() > new Date(state.campaign.deadline + 'T23:59:59-03:00').getTime()) e.push('O prazo de resposta desta campanha já terminou.');
-    }
+    if (s.mode === 'production' && dataOk(state.campaign.deadline) && Date.now() > new Date(state.campaign.deadline + 'T23:59:59-03:00').getTime()) e.push('O prazo de resposta desta campanha já terminou.');
     if (e.length) { erro(e.join('\n')); return; }
     semErro();
     if (s.mode === 'demo') { historico('simulated', selecionadas().length); sucesso(true); return; }
-    if (!pendente) { state.campaign.approved_at = state.campaign.approved_at || new Date().toISOString(); salva(); pendente = payload(); }
-    var p = pendente, rev = revisao, ctrl = new AbortController(), tm = setTimeout(function () { ctrl.abort(); }, 25000);
+    if (!pendente) pendente = payload();
+    var p = pendente, ctrl = new AbortController(), tm = setTimeout(function () { ctrl.abort(); }, 25000);
     ocupado(true);
-    fetch(s.dispatchWebhook, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token.trim() },
-      body: JSON.stringify(p), signal: ctrl.signal, credentials: 'omit', cache: 'no-store', redirect: 'error' })
+    fetch(s.dispatchWebhook, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(p), signal: ctrl.signal, credentials: 'omit', cache: 'no-store' })
       .then(function (r) {
-        return r.json().catch(function () { throw Error('O n8n não devolveu uma confirmação válida. Confira a execução antes de tentar de novo.'); })
-          .then(function (j) {
-            if (!r.ok) throw Error(r.status === 401 || r.status === 403 ? 'O token do painel não foi aceito. Confira em Configurações.' :
-              r.status === 409 ? 'Esta campanha já foi registrada no n8n (os convites já saíram). Confira a execução antes de reenviar.' :
-              (j && j.erro ? j.erro : 'O n8n recusou a campanha (HTTP ' + r.status + ').'));
-            if (!j || j.ok !== true || j.campaign_id !== p.campaign.id || j.status !== 'queued' || j.accepted !== p.recipients.length)
-              throw Error('A confirmação não corresponde a todos os destinatários. Confira o n8n; esta tela não confirmou a entrega.');
-            if (rev !== revisao) throw Error('O rascunho mudou durante o envio. Confira a campanha no n8n.');
-            historico('queued', j.accepted); sucesso(false);
-          });
+        if (!r.ok) throw Error(r.status === 404 ? 'O n8n não encontrou o link. Confira se o workflow está ativo e se o link em Configurações é o “Production URL”.' : 'O n8n recusou a campanha (erro ' + r.status + ').');
+        historico('queued', p.areas.length); sucesso(false);
       })
       .catch(function (err) {
-        erro(err.name === 'AbortError' ? 'A confirmação demorou demais. A campanha pode ter chegado ao n8n: confira a execução ou tente de novo (a mesma identificação evita envio duplicado).' :
-          err instanceof TypeError ? 'Não foi possível falar com o n8n. Confira a rede, a URL e o CORS do webhook. A identificação da campanha é mantida na nova tentativa.' : err.message);
+        erro(err.name === 'AbortError' ? 'O n8n demorou para responder. Confira em Executions se a campanha chegou antes de tentar de novo.' :
+          err instanceof TypeError ? 'Não foi possível falar com o n8n. Confira o link em Configurações e se o workflow está ativo.' : err.message);
       })
       .then(function () { clearTimeout(tm); ocupado(false); if (concluido) $('ev-enviar').disabled = true; });
   }
@@ -5110,7 +5093,7 @@ $$('#chips-grupo .chip-filtro').forEach(function (b) { b.onclick = function () {
     $('ev-todas').addEventListener('click', function () { state.selectedIds = selecionadas().length === state.areas.length ? [] : state.areas.map(function (a) { return a.id; }); mudou(); renderAreas(); });
     $('ev-btn-areas').addEventListener('click', abreAreas);
     $('ev-btn-config').addEventListener('click', function () {
-      $('ev-c-modo').value = state.settings.mode; $('ev-c-webhook').value = state.settings.dispatchWebhook; $('ev-c-url').value = state.settings.surveyBaseUrl; $('ev-c-token').value = token;
+      $('ev-c-webhook').value = state.settings.dispatchWebhook;
       $('ev-erro-config').hidden = true; $('ev-dlg-config').showModal();
     });
     document.querySelectorAll('[data-ev-fecha]').forEach(function (b) { b.addEventListener('click', function () { b.closest('dialog').close(); }); });
@@ -5121,22 +5104,22 @@ $$('#chips-grupo .chip-filtro').forEach(function (b) { b.onclick = function () {
     });
     $('ev-areas-padrao').addEventListener('click', function () { rascunho = AREAS_INICIAIS.map(function (a) { return Object.assign({}, a); }); padraoCarregado = true; renderGerente(); toast('Cadastro inicial carregado. Salve para aplicar.'); });
     $('ev-salvar-areas').addEventListener('click', salvaAreas);
-    $('ev-exportar').addEventListener('click', function () { baixa('pes-backup-' + hoje() + '.json', JSON.stringify(state, null, 2)); toast('Backup exportado (sem o token).'); });
+    $('ev-exportar').addEventListener('click', function () { baixa('pes-backup-' + hoje() + '.json', JSON.stringify(state, null, 2)); toast('Backup exportado.'); });
     $('ev-importar').addEventListener('click', function () { $('ev-arquivo').click(); });
     $('ev-arquivo').addEventListener('change', function () {
       var f = $('ev-arquivo').files && $('ev-arquivo').files[0]; if (!f) return;
       if (f.size > 1000000) { $('ev-erro-areas').textContent = 'O arquivo passa de 1 MB.'; $('ev-erro-areas').hidden = false; return; }
       f.text().then(function (t) {
-        var r = normaliza(JSON.parse(t)); r.settings.mode = 'demo'; state = r; token = '';
+        var r = normaliza(JSON.parse(t)); state = r;
         mudou(); sincroniza(); $('ev-dlg-areas').close(); $('ev-enviar').disabled = false; ir(1); toast('Backup importado. Revise antes de ativar a produção.');
       }).catch(function (e) { $('ev-erro-areas').textContent = 'Não foi possível importar: ' + e.message; $('ev-erro-areas').hidden = false; })
         .then(function () { $('ev-arquivo').value = ''; });
     });
     $('ev-salvar-config').addEventListener('click', function () {
-      var modo = $('ev-c-modo').value, url = $('ev-c-url').value.trim() || urlPesquisa(), wh = $('ev-c-webhook').value.trim();
-      if (modo === 'production' && (!httpsOk(url) || !httpsOk(wh))) { $('ev-erro-config').textContent = 'Em produção, use endereços HTTPS para o webhook e para a pesquisa.'; $('ev-erro-config').hidden = false; return; }
-      var novo = { mode: modo, dispatchWebhook: wh, surveyBaseUrl: url }, diferente = JSON.stringify(novo) !== JSON.stringify(state.settings);
-      state.settings = novo; token = $('ev-c-token').value.trim(); $('ev-c-token').value = '';
+      var wh = $('ev-c-webhook').value.trim();
+      if (wh && (!httpsOk(wh) || !/\/webhook\/pes-pesquisa-interna\/envio\/?$/.test(wh))) { $('ev-erro-config').textContent = 'Esse não parece ser o link certo. Ele começa com https:// e termina em /webhook/pes-pesquisa-interna/envio'; $('ev-erro-config').hidden = false; return; }
+      var novo = { mode: wh ? 'production' : 'demo', dispatchWebhook: wh, surveyBaseUrl: urlPesquisa() }, diferente = JSON.stringify(novo) !== JSON.stringify(state.settings);
+      state.settings = novo;
       if (diferente) mudou(); else { salva(); resumo(); }
       renderModo(); $('ev-dlg-config').close(); toast('Configurações salvas.');
       if (passo === 2) renderPrevia(); if (passo === 3) renderRevisao();
@@ -5175,7 +5158,6 @@ $$('#chips-grupo .chip-filtro').forEach(function (b) { b.onclick = function () {
   }
 
   window.PES_ENVIO = { abrir: function () { if (!iniciado) { iniciado = true; liga(); } resumo(); if (passo === 2) renderPrevia(); } };
-  // Os webhooks validam o token e a assinatura no servidor; esta tela não é barreira de acesso.
 })();
 </script>
 <script>
