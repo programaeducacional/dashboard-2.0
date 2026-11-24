@@ -1,0 +1,529 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#002d78">
+  <meta name="referrer" content="no-referrer">
+  <meta name="description" content="Pesquisa de satisfação dos serviços internos do Programa Educacional Sindusfarma.">
+  <title>Sua experiência com o PES | Sindusfarma</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23002d78'/%3E%3Ctext x='32' y='42' text-anchor='middle' font-family='Arial' font-size='31' font-weight='bold' fill='%2300f0b4'%3EP%3C/text%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cabin:wght@500;600;700&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --azul:#002D78;--azul2:#00B9F2;--azul3:#0072BC;--noite:#000F32;--menta:#00F0B4;--verde2:#00554B;--amarelo:#FFC56E;--laranja:#FF8F1C;
+      --ink:#0B1F45;--muted:#5A6E92;--line:#E1E8F3;--soft:#F4F7FC;--red:#C0263E;
+      --display:"Cabin","Trebuchet MS",system-ui,sans-serif;--text:"Work Sans",Arial,system-ui,sans-serif;
+      --ease:cubic-bezier(.22,1,.36,1);
+    }
+    *{box-sizing:border-box}
+    html{min-height:100%;background:#00215C}
+    body{margin:0;min-height:100vh;font:400 16px/1.55 var(--text);color:var(--ink);-webkit-font-smoothing:antialiased;
+      background:radial-gradient(70vw 60vw at 105% -10%,rgba(0,185,242,.35),transparent 60%),radial-gradient(50vw 50vw at -10% 110%,rgba(0,240,180,.18),transparent 60%),linear-gradient(165deg,#0A40A0 0%,#002D78 45%,#00215C 100%)}
+    button,input,textarea{font:inherit;color:inherit}button{cursor:pointer}button:disabled{cursor:wait;opacity:.6}
+    a{color:var(--azul3)}::selection{background:var(--menta);color:var(--azul)}[hidden]{display:none!important}
+    :focus-visible{outline:3px solid var(--azul2);outline-offset:3px}
+    .skip{position:absolute;left:12px;top:-80px;background:#fff;padding:12px 20px;border-radius:10px;z-index:9}.skip:focus{top:12px}
+
+    /* fundo: arcos do manual da marca */
+    .arcos{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:0}
+    .arcos svg{position:absolute;width:80vmax;height:80vmax;right:-22vmax;top:-30vmax;opacity:.9}
+    .arcos path{fill:none;stroke:rgba(255,255,255,.08);stroke-width:1.2;vector-effect:non-scaling-stroke}
+    .arcos path.m{stroke:rgba(0,240,180,.22)}
+    .pagina{position:relative;z-index:1;max-width:820px;margin:0 auto;padding:28px 24px 40px}
+
+    /* topo */
+    .marca{display:flex;align-items:center;justify-content:space-between;gap:16px;color:#fff;margin-bottom:38px}
+    .marca .pes{display:flex;align-items:center;gap:14px}
+    .monograma{width:46px;height:46px;border-radius:14px;display:grid;place-items:center;font:700 19px var(--display);letter-spacing:-.04em;color:var(--azul);
+      background:linear-gradient(135deg,var(--menta),var(--azul2));box-shadow:0 10px 30px -10px rgba(0,240,180,.7)}
+    .marca strong{display:block;font:600 16px/1.2 var(--display)}.marca small{color:#A6BDE8;font-size:13px}
+    .sindus{font:600 17px var(--display);letter-spacing:-.01em;color:#DCE9FB}.sindus span{color:var(--menta)}
+
+    .hero{color:#fff;margin:0 4px 30px;animation:sobe .7s var(--ease) both}
+    .eyebrow{display:inline-flex;align-items:center;gap:10px;margin:0 0 16px;padding:6px 14px 6px 10px;border-radius:999px;border:1px solid rgba(0,240,180,.35);
+      background:rgba(0,240,180,.08);color:var(--menta);font-size:12.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase}
+    .eyebrow i{width:8px;height:8px;border-radius:50%;background:var(--menta);box-shadow:0 0 12px var(--menta);animation:pulsa 2.4s ease-in-out infinite}
+    @keyframes pulsa{50%{opacity:.35}}
+    h1{font:600 clamp(30px,5vw,46px)/1.08 var(--display);letter-spacing:-.025em;margin:0 0 14px;max-width:640px}
+    h1 em{font-style:normal;background:linear-gradient(100deg,var(--menta),var(--azul2));-webkit-background-clip:text;background-clip:text;color:transparent}
+    .lead{color:#C9D9F4;font-size:17px;max-width:600px;margin:0}
+    .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}
+    .chips span{display:inline-flex;align-items:center;gap:7px;font-size:13px;color:#DCE9FB;padding:6px 12px;border-radius:999px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12)}
+    .chips svg{width:14px;height:14px;stroke:var(--menta);fill:none;stroke-width:2}
+
+    /* cartão */
+    .notice{border-radius:16px;padding:13px 17px;margin-bottom:14px;font-size:14px;background:rgba(0,185,242,.14);border:1px solid rgba(0,185,242,.35);color:#E3F4FF}
+    .notice.error{background:rgba(255,122,133,.14);border-color:rgba(255,122,133,.4);color:#FFE1E4}
+    .card{position:relative;background:#fff;border-radius:28px;box-shadow:0 40px 90px -40px rgba(0,8,40,.85),0 0 0 1px rgba(255,255,255,.4);overflow:hidden;animation:sobe .8s var(--ease) .08s both}
+    .card::before{content:"";position:absolute;inset:0 0 auto;height:4px;background:linear-gradient(90deg,var(--azul2),var(--menta))}
+    @keyframes sobe{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+    .cardtop{padding:28px 34px 0}
+    .progresso{display:flex;align-items:center;gap:14px;margin-bottom:22px}
+    .progress{display:flex;gap:8px;list-style:none;margin:0;padding:0;flex:1}
+    .progress li{flex:1;display:grid;gap:8px;font-size:12.5px;font-weight:600;color:var(--muted);letter-spacing:.02em}
+    .progress li::before{content:"";height:5px;border-radius:999px;background:var(--line);transition:background .5s var(--ease)}
+    .progress li[aria-current="step"]{color:var(--azul)}
+    .progress li[aria-current="step"]::before,.progress li.done::before{background:linear-gradient(90deg,var(--azul2),var(--menta))}
+    .progress li.done{color:var(--verde2)}
+    .stepnum{display:none}
+    .context{display:grid;grid-template-columns:1fr 1.3fr;gap:0;border-radius:18px;background:var(--soft);border:1px solid var(--line);overflow:hidden}
+    .context>div{padding:14px 18px;display:flex;gap:12px;align-items:center;min-width:0}
+    .context>div+div{border-left:1px solid var(--line)}
+    .ctxicon{width:38px;height:38px;flex:none;border-radius:12px;display:grid;place-items:center;background:#fff;border:1px solid var(--line);color:var(--azul3)}
+    .ctxicon svg{width:19px;height:19px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+    .context .txt{min-width:0}
+    .contextlabel{display:block;font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600}
+    .context strong{display:block;font:600 15.5px/1.3 var(--display);overflow-wrap:anywhere}
+    .context small{display:block;color:var(--muted);font-size:12.5px}
+
+    .formbody{padding:30px 34px 10px;animation:entra .5s var(--ease) both}
+    @keyframes entra{from{opacity:0;transform:translateX(10px)}to{opacity:1;transform:none}}
+    .sectiontitle{font:600 25px/1.2 var(--display);letter-spacing:-.015em;margin:0 0 6px;color:var(--azul)}
+    .sectionintro{color:var(--muted);margin:0 0 26px;font-size:15px}
+    .field{display:block;margin:0 0 28px}
+    .fieldlabel{display:block;font-weight:600;font-size:15px;margin-bottom:9px}
+    .optional{color:var(--muted);font-weight:400;font-size:14px}.required{color:var(--red)}
+    input[type="text"],textarea{width:100%;border:1.5px solid var(--line);border-radius:14px;padding:13px 15px;background:var(--soft);color:var(--ink);
+      transition:border-color .25s var(--ease),background .25s var(--ease),box-shadow .25s var(--ease)}
+    input[type="text"]:hover,textarea:hover{border-color:#C5D3E8}
+    input[type="text"]:focus,textarea:focus{outline:none;border-color:var(--azul3);background:#fff;box-shadow:0 0 0 4px rgba(0,114,188,.12)}
+    textarea{resize:vertical;min-height:150px;line-height:1.6}
+    input::placeholder,textarea::placeholder{color:#8293B0}
+    .hint{display:block;font-size:13px;color:var(--muted);margin-top:7px}
+    .fieldfoot{display:flex;justify-content:space-between;gap:16px}.counter{font-size:12.5px;color:var(--muted);margin-top:7px;white-space:nowrap}
+    fieldset{border:0;padding:0;margin:0 0 6px;min-width:0}
+    legend{font:600 19px/1.4 var(--display);letter-spacing:-.01em;padding:0;margin-bottom:20px;width:100%}
+    legend em{font-style:normal;color:var(--azul3)}
+
+    /* escala 0 a 10 */
+    .ratings{display:grid;grid-template-columns:repeat(11,minmax(0,1fr));gap:7px}
+    .rating{position:relative;cursor:pointer;min-width:0}
+    .rating input{position:absolute;opacity:0;width:1px;height:1px}
+    .rating span{display:grid;place-items:center;height:58px;border-radius:14px;border:1.5px solid var(--line);background:#fff;color:var(--azul);
+      font:600 19px var(--display);transition:transform .3s var(--ease),background .3s var(--ease),border-color .3s var(--ease),box-shadow .3s var(--ease),color .3s}
+    .rating[data-g="d"]{--c:#FF8F1C;--cs:#FFF1E3}.rating[data-g="n"]{--c:#00B9F2;--cs:#E3F6FD}.rating[data-g="p"]{--c:#00C99A;--cs:#DFFBF3}
+    .rating:hover span{transform:translateY(-3px);border-color:var(--c);background:var(--cs)}
+    .rating input:checked+span{background:var(--c);border-color:var(--c);color:#fff;transform:translateY(-4px) scale(1.06);box-shadow:0 14px 26px -12px var(--c)}
+    .rating[data-g="p"] input:checked+span{color:var(--azul)}
+    .rating input:focus-visible+span{outline:3px solid var(--azul2);outline-offset:3px}
+    .ratings.tem-nota .rating input:not(:checked)+span{opacity:.55}
+    .ratings.tem-nota .rating:hover input+span{opacity:1}
+    .faixa{display:grid;grid-template-columns:7fr 2fr 2fr;gap:7px;margin-top:10px}
+    .faixa i{height:4px;border-radius:999px}
+    .faixa i:nth-child(1){background:linear-gradient(90deg,#FFD4A8,#FF8F1C)}.faixa i:nth-child(2){background:#00B9F2}.faixa i:nth-child(3){background:linear-gradient(90deg,#00F0B4,#00C99A)}
+    .scaleends{display:flex;justify-content:space-between;gap:16px;color:var(--muted);font-size:13px;margin-top:9px}
+    .selectionnote{display:flex;align-items:center;gap:10px;min-height:44px;margin:18px 0 0;padding:10px 14px;border-radius:14px;background:var(--soft);font-size:14.5px;color:var(--muted);transition:background .3s var(--ease),color .3s}
+    .selectionnote.on{background:var(--cs,#E3F6FD);color:var(--ink)}
+    .selectionnote b{font:700 20px var(--display);color:var(--c,var(--azul))}
+
+    .reviewline{display:flex;align-items:center;gap:14px;margin:0 0 26px;padding:14px 16px;border-radius:16px;background:var(--soft);border:1px solid var(--line)}
+    .reviewscore{flex:none;width:58px;height:58px;border-radius:16px;display:grid;place-items:center;font:700 24px var(--display);color:#fff;background:var(--c,var(--azul));box-shadow:0 12px 24px -12px var(--c,var(--azul))}
+    .reviewscore .optional{display:none}
+    .reviewline p{margin:0;font-size:13.5px;color:var(--muted)}.reviewline strong{display:block;font-size:15px;color:var(--ink)}
+    .sugestoes{display:flex;flex-wrap:wrap;gap:8px;margin:-4px 0 12px}
+    .sugestoes button{border:1.5px solid var(--line);background:#fff;border-radius:999px;padding:6px 13px;font-size:13px;color:var(--azul);transition:border-color .25s,background .25s,transform .25s var(--ease)}
+    .sugestoes button:hover{border-color:var(--azul2);background:#F0FAFF;transform:translateY(-1px)}
+
+    .errorbox{margin:0 34px 18px;padding:12px 15px;border-radius:14px;background:#FFF0F2;border:1px solid #F3C4CC;color:#8C1F36;font-size:14px}
+    .actions{display:flex;align-items:center;gap:14px;padding:20px 34px 28px}
+    .actionhint{margin:0 auto 0 0;font-size:13.5px;color:var(--muted)}
+    .button{border:0;border-radius:999px;min-height:52px;padding:0 26px;display:inline-flex;align-items:center;justify-content:center;gap:10px;font:600 15.5px var(--text);
+      transition:transform .3s var(--ease),box-shadow .3s var(--ease),background .3s}
+    .button svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;transition:transform .3s var(--ease)}
+    .primary{margin-left:auto;background:var(--azul);color:#fff;box-shadow:0 14px 30px -14px rgba(0,45,120,.9)}
+    .primary:hover{transform:translateY(-2px);background:#003A9A}.primary:hover svg{transform:translateX(3px)}
+    #submit{background:linear-gradient(120deg,var(--menta),var(--azul2));color:var(--azul);box-shadow:0 14px 30px -12px rgba(0,201,154,.8)}
+    .secondary{background:var(--soft);color:var(--azul);border:1.5px solid var(--line)}.secondary:hover{background:#EAF0F8}
+
+    /* estados */
+    .state{padding:54px 34px;text-align:center}
+    .stateicon{width:76px;height:76px;margin:0 auto 22px;border-radius:24px;display:grid;place-items:center;font:700 32px var(--display);color:var(--azul);
+      background:linear-gradient(135deg,var(--menta),var(--azul2));box-shadow:0 18px 40px -16px rgba(0,201,154,.8)}
+    #unavailable .stateicon{background:linear-gradient(135deg,var(--amarelo),var(--laranja));box-shadow:0 18px 40px -16px rgba(255,143,28,.7)}
+    .check{width:38px;height:38px;stroke:var(--azul);fill:none;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:40;stroke-dashoffset:40;animation:risca .7s var(--ease) .25s forwards}
+    @keyframes risca{to{stroke-dashoffset:0}}
+    #success:not([hidden]) .stateicon{animation:pop .6s var(--ease) both}
+    @keyframes pop{from{transform:scale(.6);opacity:0}to{transform:none;opacity:1}}
+    .state h2{font:600 28px/1.2 var(--display);letter-spacing:-.02em;margin:0 0 12px;color:var(--azul)}
+    .state p{max-width:520px;margin:0 auto 16px;color:var(--muted);font-size:15.5px}
+    #successContext{display:table;margin:0 auto 18px!important;padding:6px 14px;border-radius:999px;background:var(--soft);border:1px solid var(--line);color:var(--ink);font-weight:500;font-size:14px}
+    .receipt{font:12px ui-monospace,monospace;color:var(--muted);word-break:break-all}
+    .spinner{width:34px;height:34px;margin:0 auto 18px;border-radius:50%;border:3.5px solid var(--line);border-top-color:var(--azul2);animation:gira 1s linear infinite}
+    @keyframes gira{to{transform:rotate(360deg)}}
+    .confete{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+    .confete i{position:absolute;top:-12px;width:8px;height:14px;border-radius:2px;opacity:0;animation:cai 1.8s var(--ease) forwards}
+    @keyframes cai{0%{opacity:1;transform:translateY(0) rotate(0)}100%{opacity:0;transform:translateY(340px) rotate(540deg)}}
+
+    footer{position:relative;z-index:1;max-width:760px;margin:0 auto;padding:0 24px 34px;text-align:center;color:#A6BDE8;font-size:13px}
+    footer p{margin:5px 0}footer strong{color:#fff;font-weight:600}
+    .noscript{max-width:760px;margin:20px auto;background:#fff;padding:18px;border-radius:14px;color:var(--red)}
+
+    @media(max-width:640px){
+      .pagina{padding:18px 14px 28px}.marca{margin-bottom:26px}.sindus{display:none}
+      .lead{font-size:15.5px}.cardtop{padding:24px 20px 0}.formbody{padding:24px 20px 6px}.actions{padding:16px 20px 22px;flex-wrap:wrap}
+      .actionhint{width:100%;order:3;text-align:center;margin:0}.primary{flex:1}.card{border-radius:22px}
+      .context{grid-template-columns:1fr}.context>div+div{border-left:0;border-top:1px solid var(--line)}
+      .ratings{grid-template-columns:repeat(6,minmax(0,1fr));gap:8px}.rating span{height:52px}
+      .faixa{display:none}.sectiontitle{font-size:22px}legend{font-size:17px}.errorbox{margin:0 20px 16px}.state{padding:40px 22px}
+    }
+    @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}.check{stroke-dashoffset:0}}
+  </style>
+</head>
+<body>
+  <a class="skip" href="#main">Ir para a pesquisa</a>
+  <div class="arcos" aria-hidden="true"><svg viewBox="0 0 400 400"><path d="M58 392 A176 176 0 1 1 352 118"/><path class="m" d="M44 398 A190 190 0 1 1 364 108"/><path d="M140 400 C150 300 186 214 262 210 C300 208 330 232 352 262"/><path d="M206 400 C216 326 238 276 282 268 C310 263 334 276 352 296"/></svg></div>
+
+  <div class="pagina">
+    <header class="marca">
+      <div class="pes"><div class="monograma" aria-label="PES">PES</div><div><strong>Programa Educacional</strong><small>Serviços internos</small></div></div>
+      <div class="sindus">sindusfarma<span>.</span></div>
+    </header>
+
+    <section class="hero" aria-labelledby="title">
+      <p class="eyebrow"><i></i>Escuta que transforma</p>
+      <h1 id="title">Sua experiência ajuda a construir <em>o próximo passo.</em></h1>
+      <p class="lead">Conte como foi o apoio do Programa Educacional à sua área. Sua avaliação orienta a melhoria dos nossos serviços.</p>
+      <div class="chips"><span><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>Cerca de 2 minutos</span><span><svg viewBox="0 0 24 24"><path d="M5 12.5 10 17 19 7"/></svg>2 perguntas</span><span><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c.8-3.8 3.6-6 7-6s6.2 2.2 7 6"/></svg>Nome opcional</span></div>
+    </section>
+
+    <main id="main" tabindex="-1">
+      <div id="previewNotice" class="notice" hidden><strong>Prévia da pesquisa.</strong> Você pode testar todas as etapas. Nenhuma resposta será enviada.</div>
+      <div id="mainNotice" class="notice error" role="alert" hidden></div>
+      <section class="card" aria-label="Pesquisa de satisfação">
+        <div id="loading" class="state"><div class="spinner" aria-hidden="true"></div><h2>Preparando sua pesquisa</h2><p>Estamos conferindo as informações do convite.</p></div>
+        <div id="unavailable" class="state" hidden><div class="stateicon" aria-hidden="true">!</div><h2 id="unavailableTitle">Não foi possível abrir a pesquisa</h2><p id="unavailableText"></p><button id="retryContext" type="button" class="button secondary" hidden>Tentar novamente</button></div>
+        <form id="survey" novalidate hidden>
+          <div class="cardtop">
+            <div class="progresso"><ol class="progress" aria-label="Etapas da pesquisa"><li id="stepLabel1" aria-current="step"><span class="stepnum">1</span>1 · Sua avaliação</li><li id="stepLabel2"><span class="stepnum">2</span>2 · Comentários</li></ol></div>
+            <div class="context">
+              <div><span class="ctxicon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 20V9.5L12 4l8 5.5V20"/><path d="M9.5 20v-5.5h5V20"/></svg></span><span class="txt"><span class="contextlabel">Área participante</span><strong id="areaValue"></strong></span></div>
+              <div><span class="ctxicon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="2.5"/><path d="M4 10h16M9 3v4M15 3v4"/></svg></span><span class="txt"><span class="contextlabel">Período avaliado</span><strong id="periodValue"></strong><small id="periodDates"></small></span></div>
+            </div>
+          </div>
+          <section id="step1" class="formbody" aria-labelledby="step1Title">
+            <h2 id="step1Title" class="sectiontitle" tabindex="-1">Como foi a sua experiência?</h2>
+            <p class="sectionintro">Considere os serviços prestados pelo PES à sua área no período indicado.</p>
+            <label class="field" for="respondentName"><span class="fieldlabel">Seu nome <span class="optional">(opcional)</span></span><input id="respondentName" name="name" type="text" maxlength="120" autocomplete="name" placeholder="Como podemos chamar você?"><span class="hint">Você pode deixar este campo em branco.</span></label>
+            <fieldset id="scoreField"><legend>Qual o seu nível de satisfação referente aos serviços prestados pelo PES no período de <em id="questionPeriod"></em>? <span class="required" aria-label="obrigatório">*</span></legend>
+              <div class="ratings" id="ratings"></div>
+              <div class="faixa" aria-hidden="true"><i></i><i></i><i></i></div>
+              <div class="scaleends"><span>0 · Muito insatisfeito</span><span>10 · Muito satisfeito</span></div>
+              <p class="selectionnote" id="selectionNote" aria-live="polite">Selecione uma nota de 0 a 10.</p>
+            </fieldset>
+          </section>
+          <section id="step2" class="formbody" aria-labelledby="step2Title" hidden>
+            <h2 id="step2Title" class="sectiontitle" tabindex="-1">O que podemos melhorar?</h2>
+            <p class="sectionintro">Compartilhe sugestões, pontos positivos ou algo que faria diferença para sua área.</p>
+            <div class="reviewline"><div class="reviewscore" id="reviewBox"><span id="reviewRating">—</span><span class="optional"> / 10</span></div><p><strong>Sua avaliação</strong>Você pode voltar para alterar a nota.</p></div>
+            <label class="field" for="comments"><span class="fieldlabel">Quais sugestões você daria para melhorar os serviços prestados pela área educacional? <span class="required" aria-label="obrigatório">*</span></span>
+              <span class="sugestoes" id="sugestoes" aria-label="Respostas rápidas"><button type="button">Sem sugestões no momento</button><button type="button">Parabéns pelo trabalho da equipe</button></span>
+              <textarea id="comments" name="comments" maxlength="3000" required placeholder="Conte o que funcionou bem e o que podemos fazer melhor…" aria-describedby="commentHint commentCounter"></textarea>
+              <span class="fieldfoot"><span class="hint" id="commentHint">Se não houver sugestões, você pode registrar isso aqui.</span><span class="counter" id="commentCounter">0 / 3.000</span></span></label>
+          </section>
+          <div id="formError" class="errorbox" role="alert" tabindex="-1" hidden></div>
+          <div class="actions"><p id="actionHint" class="actionhint">Sua opinião faz parte da evolução do PES.</p><button id="back" type="button" class="button secondary" hidden>Voltar</button><button id="next" type="button" class="button primary">Continuar<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button><button id="submit" type="submit" class="button primary" hidden>Enviar minha resposta</button></div>
+        </form>
+        <div id="success" class="state" hidden><div class="confete" id="confete" aria-hidden="true"></div><div class="stateicon" aria-hidden="true"><svg class="check" viewBox="0 0 24 24"><path d="M5 12.5 10 17 19 7"/></svg></div><h2 id="successTitle" tabindex="-1">Obrigado por compartilhar!</h2><p id="successText">Sua resposta foi registrada. Ela vai ajudar o Programa Educacional a aprimorar o apoio às áreas do Sindusfarma.</p><p id="successContext"></p><p id="receipt" class="receipt" hidden></p><button id="restartPreview" type="button" class="button secondary" hidden>Testar novamente</button></div>
+      </section>
+    </main>
+  </div>
+  <footer><p><strong>Programa Educacional Sindusfarma</strong></p><p>O nome é opcional. A resposta é vinculada à área e ao período do convite para análise dos serviços internos.</p><p id="deadlineNote" hidden></p></footer>
+  <noscript><p class="noscript">Ative o JavaScript do navegador para responder a esta pesquisa.</p></noscript>
+
+  <!-- CONFIGURAÇÃO DA PESQUISA: informe apenas URLs públicas de endpoints. Nunca inclua senhas ou chaves privadas neste arquivo. -->
+  <!-- Basta preencher "n8nBase" com o endereço do seu n8n (ex.: https://sindusfarma.app.n8n.cloud). Os dois webhooks são montados a partir dele. -->
+  <script type="application/json" id="pes-config">{"n8nBase":"","contextWebhook":"","responseWebhook":"","requestTimeoutMs":20000}</script>
+  <script>
+  (() => {
+    'use strict';
+    const $ = id => document.getElementById(id);
+    const params = new URLSearchParams(location.search);
+    const token = params.get('t') || '';
+    const demo = params.get('preview') === '1' || !token;
+    let tracker = null;
+    let step = 1;
+    let sending = false;
+    let responseId = uuid();
+    let storageKey = '';
+    let config = {};
+    try { config = JSON.parse($('pes-config').textContent); } catch { /* A configuração inválida será apresentada ao abrir um convite real. */ }
+    if (typeof config.n8nBase === 'string' && config.n8nBase.trim()) {
+      const base = config.n8nBase.trim().replace(/\/+$/, '') + '/webhook/pes-pesquisa-interna/';
+      if (!config.contextWebhook) config.contextWebhook = base + 'contexto';
+      if (!config.responseWebhook) config.responseWebhook = base + 'resposta';
+    }
+    const timeout = Number.isFinite(Number(config.requestTimeoutMs)) ? Math.max(3000, Math.min(60000, Number(config.requestTimeoutMs))) : 20000;
+    // faixas da escala: 0–6 detratores, 7–8 neutros, 9–10 promotores (cálculo do NPS no painel)
+    const GRUPO = v => v >= 9 ? 'p' : v >= 7 ? 'n' : 'd';
+    const COR = { d: ['#FF8F1C', '#FFF1E3'], n: ['#00B9F2', '#E3F6FD'], p: ['#00C99A', '#DFFBF3'] };
+    const SENTIDO = ['Muito insatisfeito', 'Muito insatisfeito', 'Insatisfeito', 'Insatisfeito', 'Pouco satisfeito', 'Pouco satisfeito', 'Pouco satisfeito', 'Satisfeito', 'Satisfeito', 'Muito satisfeito', 'Extremamente satisfeito'];
+
+    function uuid() {
+      if (globalThis.crypto && crypto.randomUUID) return crypto.randomUUID();
+      if (globalThis.crypto && crypto.getRandomValues) {
+        const bytes = crypto.getRandomValues(new Uint8Array(16));
+        bytes[6] = (bytes[6] & 15) | 64;
+        bytes[8] = (bytes[8] & 63) | 128;
+        const hex = [...bytes].map(n => n.toString(16).padStart(2, '0')).join('');
+        return `${hex.slice(0,8)}-${hex.slice(8,12)}-${hex.slice(12,16)}-${hex.slice(16,20)}-${hex.slice(20)}`;
+      }
+      return `local-${Date.now()}-${Math.random().toString(36).slice(2)}`;
+    }
+    function short(value, max = 300) { return typeof value === 'string' ? value.trim().slice(0, max) : ''; }
+    function validDate(value) {
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(value || '')) return false;
+      const date = new Date(`${value}T12:00:00Z`);
+      return !Number.isNaN(date.getTime()) && date.toISOString().slice(0, 10) === value;
+    }
+    function displayDate(value) {
+      return validDate(value) ? new Intl.DateTimeFormat('pt-BR', {timeZone:'UTC'}).format(new Date(`${value}T12:00:00Z`)) : '';
+    }
+    function endpoint(value) {
+      if (!value || typeof value !== 'string') return '';
+      try {
+        const url = new URL(value, location.href);
+        const local = ['localhost', '127.0.0.1', '[::1]'].includes(url.hostname);
+        if ((url.protocol === 'https:' || (local && url.protocol === 'http:')) && !url.username && !url.password) return url.href;
+      } catch { /* URL inválida. */ }
+      return '';
+    }
+    function setError(message) {
+      $('formError').textContent = message;
+      $('formError').hidden = false;
+      $('formError').focus();
+    }
+    function clearError() { $('formError').hidden = true; $('formError').textContent = ''; }
+    function unavailable(title, text, retry = false) {
+      $('loading').hidden = true;
+      $('survey').hidden = true;
+      $('success').hidden = true;
+      $('unavailable').hidden = false;
+      $('unavailableTitle').textContent = title;
+      $('unavailableText').textContent = text;
+      $('retryContext').hidden = !retry;
+    }
+    function checkedRating() {
+      const input = document.querySelector('input[name="rating"]:checked');
+      return input ? Number(input.value) : null;
+    }
+    function paintRating() {
+      const v = checkedRating(), note = $('selectionNote');
+      $('ratings').classList.toggle('tem-nota', v !== null);
+      if (v === null) { note.className = 'selectionnote'; note.textContent = 'Selecione uma nota de 0 a 10.'; $('reviewBox').style.removeProperty('--c'); return; }
+      const [c, cs] = COR[GRUPO(v)];
+      note.className = 'selectionnote on'; note.style.setProperty('--c', c); note.style.setProperty('--cs', cs);
+      note.innerHTML = '';
+      const b = document.createElement('b'); b.textContent = String(v);
+      note.append(b, document.createTextNode(`${SENTIDO[v]} · você selecionou a nota ${v} de 10.`));
+      $('reviewBox').style.setProperty('--c', c);
+    }
+    function changeStep(value, focus = true) {
+      step = value;
+      clearError();
+      $('step1').hidden = value !== 1;
+      $('step2').hidden = value !== 2;
+      $('back').hidden = value !== 2;
+      $('next').hidden = value !== 1;
+      $('submit').hidden = value !== 2;
+      $('actionHint').hidden = value === 2;
+      $('stepLabel1').classList.toggle('done', value === 2);
+      $('stepLabel1').toggleAttribute('aria-current', value === 1);
+      $('stepLabel2').toggleAttribute('aria-current', value === 2);
+      if (value === 1) $('stepLabel1').setAttribute('aria-current', 'step');
+      if (value === 2) $('stepLabel2').setAttribute('aria-current', 'step');
+      $('reviewRating').textContent = String(checkedRating() ?? '—');
+      paintRating();
+      if (focus) $(`step${value}Title`).focus();
+    }
+    function renderContext() {
+      $('areaValue').textContent = tracker.area;
+      $('periodValue').textContent = tracker.data;
+      $('questionPeriod').textContent = tracker.data;
+      $('periodDates').textContent = `${displayDate(tracker.period_start)} a ${displayDate(tracker.period_end)}`;
+      $('deadlineNote').hidden = !tracker.deadline;
+      $('deadlineNote').textContent = tracker.deadline ? `Prazo para responder: ${displayDate(tracker.deadline)}.` : '';
+      $('loading').hidden = true;
+      $('unavailable').hidden = true;
+      $('survey').hidden = false;
+      changeStep(1, false);
+    }
+    function validTracker(value) {
+      if (!value || typeof value !== 'object' || Array.isArray(value)) return null;
+      const result = {};
+      for (const key of ['campaign_id','invitation_id','area_id','area','data','period_start','period_end','deadline']) {
+        result[key] = short(value[key], ['area','data'].includes(key) ? 300 : 150);
+        if (!result[key]) return null;
+      }
+      if (![result.period_start,result.period_end,result.deadline].every(validDate)) return null;
+      if (result.period_start > result.period_end) return null;
+      return result;
+    }
+    async function post(url, body) {
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), timeout);
+      try {
+        const response = await fetch(url, {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body),signal:controller.signal,credentials:'omit',cache:'no-store',referrerPolicy:'no-referrer'});
+        let json = null;
+        try { json = await response.json(); } catch { /* A confirmação deve ser JSON. */ }
+        return {response,json};
+      } finally { clearTimeout(timer); }
+    }
+    async function prepareResponseId() {
+      if (!globalThis.crypto || !crypto.subtle || demo) return;
+      try {
+        const hash = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(token));
+        storageKey = 'pes-survey-v1:' + [...new Uint8Array(hash)].map(n => n.toString(16).padStart(2,'0')).join('');
+        const saved = JSON.parse(localStorage.getItem(storageKey) || 'null');
+        if (saved && typeof saved.response_id === 'string' && /^[a-zA-Z0-9-]{10,100}$/.test(saved.response_id)) responseId = saved.response_id;
+        localStorage.setItem(storageKey, JSON.stringify({response_id:responseId}));
+      } catch { /* Armazenamento local opcional; a deduplicação definitiva é responsabilidade do servidor. */ }
+    }
+    function rememberAck() {
+      if (!storageKey) return;
+      try { localStorage.setItem(storageKey, JSON.stringify({response_id:responseId,acknowledged:true})); } catch { /* Sem dados pessoais no armazenamento. */ }
+    }
+    function previewTracker() {
+      const start = params.get('period_start');
+      const end = params.get('period_end');
+      const deadline = params.get('deadline');
+      return {campaign_id:'preview',invitation_id:'preview',area_id:'preview',area:short(params.get('area')) || 'Área participante · exemplo',data:short(params.get('data')) || '3º trimestre de 2026',period_start:validDate(start) ? start : '2026-07-01',period_end:validDate(end) ? end : '2026-09-30',deadline:validDate(deadline) ? deadline : ''};
+    }
+    async function openContext() {
+      $('unavailable').hidden = true;
+      $('loading').hidden = false;
+      if (demo) {
+        tracker = previewTracker();
+        $('previewNotice').hidden = false;
+        $('submit').textContent = 'Simular resposta';
+        renderContext();
+        return;
+      }
+      if (!/^[A-Za-z0-9_.~-]{16,2048}$/.test(token)) {
+        unavailable('Este convite não é válido', 'Confira se você abriu o link completo recebido por e-mail. Se precisar, solicite um novo convite ao Programa Educacional.');
+        return;
+      }
+      const contextUrl = endpoint(config.contextWebhook);
+      if (!contextUrl || !endpoint(config.responseWebhook)) {
+        unavailable('Pesquisa aguardando configuração', 'A conexão desta pesquisa ainda precisa ser concluída pelo Programa Educacional. Entre em contato com a equipe responsável.');
+        return;
+      }
+      try {
+        const {response,json} = await post(contextUrl, {token});
+        if (response.status === 409) { unavailable('Esta pesquisa já foi respondida', 'Já recebemos uma resposta para este convite. Obrigado pela participação da sua área!'); return; }
+        if (response.status === 410) { unavailable('O prazo desta pesquisa terminou', 'O período de recebimento de respostas foi encerrado. Para mais informações, fale com o Programa Educacional.'); return; }
+        if ([401,403,404].includes(response.status)) { unavailable('Não foi possível validar o convite', 'Confira o link recebido por e-mail ou solicite um novo convite ao Programa Educacional.'); return; }
+        if (!response.ok) throw new Error('http');
+        tracker = json && json.ok === true ? validTracker(json.tracker) : null;
+        if (!tracker) throw new Error('context');
+        if (Date.now() > Date.parse(`${tracker.deadline}T23:59:59-03:00`)) {
+          unavailable('O prazo desta pesquisa terminou', 'O período de recebimento de respostas foi encerrado. Para mais informações, fale com o Programa Educacional.');
+          return;
+        }
+        await prepareResponseId();
+        renderContext();
+      } catch (error) {
+        unavailable('Não foi possível carregar sua pesquisa', error.name === 'AbortError' ? 'A conexão demorou mais que o esperado. Tente novamente em instantes.' : 'Confira sua conexão e tente novamente. Se o problema continuar, fale com o Programa Educacional.', true);
+      }
+    }
+    function buildPayload() {
+      return {event:'pes.survey.response',schema_version:'1.0',response_id:responseId,token,tracker:{...tracker},respondent:{name:$('respondentName').value.trim()},rating:checkedRating(),comments:$('comments').value.trim(),submitted_at:new Date().toISOString(),metric:'satisfaction_0_10'};
+    }
+    function confete() {
+      if (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      const box = $('confete'); box.replaceChildren();
+      const cores = ['#00F0B4', '#00B9F2', '#002D78', '#FFC56E', '#AD96DC'];
+      for (let i = 0; i < 38; i++) {
+        const c = document.createElement('i');
+        c.style.left = Math.random() * 100 + '%'; c.style.background = cores[i % cores.length];
+        c.style.animationDelay = Math.random() * .5 + 's'; c.style.transform = `rotate(${Math.random() * 180}deg)`;
+        box.append(c);
+      }
+    }
+    function success(demonstration) {
+      $('survey').hidden = true;
+      $('success').hidden = false;
+      $('successTitle').textContent = demonstration ? 'Assim será a confirmação de envio.' : 'Obrigado por compartilhar!';
+      $('successText').textContent = demonstration ? 'Resposta simulada. Nenhum dado foi enviado.' : 'Sua resposta foi registrada. Ela vai ajudar o Programa Educacional a aprimorar o apoio às áreas do Sindusfarma.';
+      $('successContext').textContent = `${tracker.area} · ${tracker.data}`;
+      $('receipt').hidden = demonstration;
+      $('receipt').textContent = demonstration ? '' : `Protocolo: ${responseId}`;
+      $('restartPreview').hidden = !demonstration;
+      if (!demonstration) {
+        rememberAck();
+        $('respondentName').value = '';
+        $('comments').value = '';
+        document.querySelectorAll('input[name="rating"]').forEach(input => { input.checked = false; });
+      }
+      confete();
+      $('successTitle').focus();
+    }
+
+    for (let value = 0; value <= 10; value++) {
+      const label = document.createElement('label');
+      label.className = 'rating';
+      label.dataset.g = GRUPO(value);
+      const input = document.createElement('input');
+      input.type = 'radio'; input.name = 'rating'; input.value = String(value); input.required = true;
+      input.setAttribute('aria-label', `Nota ${value} de 10`);
+      const span = document.createElement('span'); span.textContent = String(value);
+      label.append(input,span); $('ratings').append(label);
+      input.addEventListener('change', () => { paintRating(); clearError(); });
+    }
+    $('next').addEventListener('click', () => {
+      if (checkedRating() === null) { setError('Selecione uma nota de 0 a 10 para continuar.'); return; }
+      changeStep(2);
+    });
+    $('back').addEventListener('click', () => { if (!sending) changeStep(1); });
+    const contar = () => { $('commentCounter').textContent = `${$('comments').value.length.toLocaleString('pt-BR')} / 3.000`; };
+    $('comments').addEventListener('input', contar);
+    $('sugestoes').addEventListener('click', e => {
+      const b = e.target.closest('button'); if (!b || sending) return;
+      const t = $('comments'); t.value = t.value.trim() ? `${t.value.trim()} ${b.textContent}.` : `${b.textContent}.`;
+      contar(); t.focus();
+    });
+    $('retryContext').addEventListener('click', openContext);
+    $('restartPreview').addEventListener('click', () => { $('success').hidden = true; $('survey').hidden = false; changeStep(1); });
+    $('survey').addEventListener('submit', async event => {
+      event.preventDefault();
+      if (sending) return;
+      if (step === 1) { $('next').click(); return; }
+      if (checkedRating() === null) { changeStep(1); setError('Selecione uma nota de 0 a 10.'); return; }
+      if (!$('comments').value.trim()) { setError('Registre seu comentário ou sugestão antes de enviar.'); $('comments').setAttribute('aria-invalid','true'); return; }
+      $('comments').removeAttribute('aria-invalid');
+      if ($('respondentName').value.length > 120 || $('comments').value.length > 3000) { setError('Revise os campos: nome com até 120 caracteres e comentário com até 3.000.'); return; }
+      clearError();
+      if (demo) { success(true); return; }
+      if (!tracker || !endpoint(config.responseWebhook)) { setError('A conexão da pesquisa não está disponível. Atualize a página e tente novamente.'); return; }
+      const payload = buildPayload();
+      sending = true;
+      $('submit').disabled = true; $('back').disabled = true; $('submit').textContent = 'Enviando resposta…';
+      $('respondentName').disabled = true; $('comments').disabled = true;
+      document.querySelectorAll('input[name="rating"]').forEach(input => { input.disabled = true; });
+      try {
+        const {response,json} = await post(endpoint(config.responseWebhook), payload);
+        if (response.status === 409) { unavailable('Esta pesquisa já foi respondida', 'Já existe uma resposta registrada para este convite. Obrigado pela participação da sua área!'); return; }
+        if (response.status === 410) { unavailable('O prazo desta pesquisa terminou', 'O período de recebimento de respostas foi encerrado. Para mais informações, fale com o Programa Educacional.'); return; }
+        if ([401,403,404].includes(response.status)) { setError('Não foi possível validar este convite. Solicite um novo link ao Programa Educacional. Seus campos foram mantidos nesta página.'); return; }
+        if (!response.ok || !json || json.ok !== true || json.response_id !== responseId) {
+          setError('O servidor ainda não confirmou o recebimento. Seus campos foram mantidos; tente enviar novamente.');
+          return;
+        }
+        success(false);
+      } catch (error) {
+        setError(error.name === 'AbortError' ? 'A confirmação demorou mais que o esperado. Seus campos foram mantidos; tente enviar novamente.' : 'Não conseguimos confirmar o envio. Confira sua conexão e tente novamente; seus campos foram mantidos.');
+      } finally {
+        sending = false;
+        $('submit').disabled = false; $('back').disabled = false; $('submit').textContent = 'Enviar minha resposta';
+        $('respondentName').disabled = false; $('comments').disabled = false;
+        document.querySelectorAll('input[name="rating"]').forEach(input => { input.disabled = false; });
+      }
+    });
+    window.PES_SURVEY = Object.freeze({getState:() => ({demo,step,sending,tracker:tracker ? {...tracker} : null,responseId}),buildPayload});
+    openContext();
+  })();
+  </script>
+</body>
+</html>
