@@ -1,8 +1,8 @@
-/* Painel PES 2.0 · pesquisas_internas.js · gerado pelo n8n em 24/11/2026, 08:58:09 */
+/* Painel PES 2.0 · pesquisas_internas.js · gerado pelo n8n em 24/11/2026, 10:33:20 */
 /* Pesquisas de satisfação das áreas internas com o PES: campanhas[] e respostas[] (nota 0–10 + comentário). O n8n reescreve este arquivo a cada campanha e resposta. */
 window.PES_INTERNAS = {
  "meta": {
-  "gerado_em": "2026-11-24T08:58:09-03:00",
+  "gerado_em": "2026-11-24T10:33:20-03:00",
   "fonte": "Painel PES · n8n (pesquisas internas)",
   "versao": 1
  },
@@ -71,6 +71,21 @@ window.PES_INTERNAS = {
     "PES"
    ],
    "enviada_em": "2026-11-24T08:56:27"
+  },
+  {
+   "id": "75ed15c2-facd-42c3-b6f8-5757269f39c7",
+   "titulo": "4º trimestre de 2026",
+   "ano": 2026,
+   "period_start": "2026-10-01",
+   "period_end": "2026-12-31",
+   "period_label": "outubro, novembro e dezembro de 2026",
+   "prazo": "2027-01-15",
+   "origem": "Painel PES",
+   "convites": 1,
+   "areas": [
+    "PES"
+   ],
+   "enviada_em": "2026-11-24T10:33:20"
   }
  ],
  "respostas": [
