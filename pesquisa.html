@@ -234,28 +234,23 @@
   <noscript><p class="noscript">Ative o JavaScript do navegador para responder a esta pesquisa.</p></noscript>
 
   <!-- CONFIGURAÇÃO DA PESQUISA: informe apenas URLs públicas de endpoints. Nunca inclua senhas ou chaves privadas neste arquivo. -->
-  <!-- Basta preencher "n8nBase" com o endereço do seu n8n (ex.: https://sindusfarma.app.n8n.cloud). Os dois webhooks são montados a partir dele. -->
-  <script type="application/json" id="pes-config">{"n8nBase":"","contextWebhook":"","responseWebhook":"","requestTimeoutMs":20000}</script>
+  <!-- Nada para configurar aqui: o link enviado pelo n8n já traz a área, o período e o endereço de resposta. -->
   <script>
   (() => {
     'use strict';
     const $ = id => document.getElementById(id);
     const params = new URLSearchParams(location.search);
-    const token = params.get('t') || '';
-    const demo = params.get('preview') === '1' || !token;
+    const campanha = params.get('c') || '';
+    const demo = params.get('preview') === '1' || !campanha;
     let tracker = null;
     let step = 1;
     let sending = false;
     let responseId = uuid();
     let storageKey = '';
-    let config = {};
-    try { config = JSON.parse($('pes-config').textContent); } catch { /* A configuração inválida será apresentada ao abrir um convite real. */ }
-    if (typeof config.n8nBase === 'string' && config.n8nBase.trim()) {
-      const base = config.n8nBase.trim().replace(/\/+$/, '') + '/webhook/pes-pesquisa-interna/';
-      if (!config.contextWebhook) config.contextWebhook = base + 'contexto';
-      if (!config.responseWebhook) config.responseWebhook = base + 'resposta';
-    }
-    const timeout = Number.isFinite(Number(config.requestTimeoutMs)) ? Math.max(3000, Math.min(60000, Number(config.requestTimeoutMs))) : 20000;
+    let jaRespondida = false;
+    const timeout = 20000;
+    // endereço do n8n que recebe a resposta: vem no próprio link do e-mail
+    const respostaUrl = (() => { try { const u = new URL(params.get('w') || ''); return u.protocol === 'https:' && /\/webhook\//.test(u.pathname) ? u.href : ''; } catch { return ''; } })();
     // faixas da escala: 0–6 detratores, 7–8 neutros, 9–10 promotores (cálculo do NPS no painel)
     const GRUPO = v => v >= 9 ? 'p' : v >= 7 ? 'n' : 'd';
     const COR = { d: ['#FF8F1C', '#FFF1E3'], n: ['#00B9F2', '#E3F6FD'], p: ['#00C99A', '#DFFBF3'] };
@@ -374,10 +369,11 @@
     async function prepareResponseId() {
       if (!globalThis.crypto || !crypto.subtle || demo) return;
       try {
-        const hash = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(token));
+        const hash = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(tracker.invitation_id));
         storageKey = 'pes-survey-v1:' + [...new Uint8Array(hash)].map(n => n.toString(16).padStart(2,'0')).join('');
         const saved = JSON.parse(localStorage.getItem(storageKey) || 'null');
         if (saved && typeof saved.response_id === 'string' && /^[a-zA-Z0-9-]{10,100}$/.test(saved.response_id)) responseId = saved.response_id;
+        if (saved && saved.acknowledged) jaRespondida = true;
         localStorage.setItem(storageKey, JSON.stringify({response_id:responseId}));
       } catch { /* Armazenamento local opcional; a deduplicação definitiva é responsabilidade do servidor. */ }
     }
@@ -401,35 +397,23 @@
         renderContext();
         return;
       }
-      if (!/^[A-Za-z0-9_.~-]{16,2048}$/.test(token)) {
-        unavailable('Este convite não é válido', 'Confira se você abriu o link completo recebido por e-mail. Se precisar, solicite um novo convite ao Programa Educacional.');
+      tracker = validTracker({ campaign_id: campanha, invitation_id: campanha + ':' + (params.get('ai') || ''), area_id: params.get('ai'), area: params.get('a'),
+        data: params.get('d'), period_start: params.get('s'), period_end: params.get('e'), deadline: params.get('p') });
+      if (!tracker || !respostaUrl) {
+        unavailable('Este link está incompleto', 'Confira se você abriu o link inteiro recebido por e-mail. Se precisar, peça um novo convite ao Programa Educacional.');
         return;
       }
-      const contextUrl = endpoint(config.contextWebhook);
-      if (!contextUrl || !endpoint(config.responseWebhook)) {
-        unavailable('Pesquisa aguardando configuração', 'A conexão desta pesquisa ainda precisa ser concluída pelo Programa Educacional. Entre em contato com a equipe responsável.');
+      if (Date.now() > Date.parse(`${tracker.deadline}T23:59:59-03:00`)) {
+        unavailable('O prazo desta pesquisa terminou', 'O período de recebimento de respostas foi encerrado. Para mais informações, fale com o Programa Educacional.');
         return;
       }
-      try {
-        const {response,json} = await post(contextUrl, {token});
-        if (response.status === 409) { unavailable('Esta pesquisa já foi respondida', 'Já recebemos uma resposta para este convite. Obrigado pela participação da sua área!'); return; }
-        if (response.status === 410) { unavailable('O prazo desta pesquisa terminou', 'O período de recebimento de respostas foi encerrado. Para mais informações, fale com o Programa Educacional.'); return; }
-        if ([401,403,404].includes(response.status)) { unavailable('Não foi possível validar o convite', 'Confira o link recebido por e-mail ou solicite um novo convite ao Programa Educacional.'); return; }
-        if (!response.ok) throw new Error('http');
-        tracker = json && json.ok === true ? validTracker(json.tracker) : null;
-        if (!tracker) throw new Error('context');
-        if (Date.now() > Date.parse(`${tracker.deadline}T23:59:59-03:00`)) {
-          unavailable('O prazo desta pesquisa terminou', 'O período de recebimento de respostas foi encerrado. Para mais informações, fale com o Programa Educacional.');
-          return;
-        }
-        await prepareResponseId();
-        renderContext();
-      } catch (error) {
-        unavailable('Não foi possível carregar sua pesquisa', error.name === 'AbortError' ? 'A conexão demorou mais que o esperado. Tente novamente em instantes.' : 'Confira sua conexão e tente novamente. Se o problema continuar, fale com o Programa Educacional.', true);
-      }
+      await prepareResponseId();
+      if (jaRespondida) { unavailable('Esta pesquisa já foi respondida', 'Já recebemos a resposta enviada deste computador. Obrigado pela participação da sua área!'); return; }
+      renderContext();
     }
     function buildPayload() {
-      return {event:'pes.survey.response',schema_version:'1.0',response_id:responseId,token,tracker:{...tracker},respondent:{name:$('respondentName').value.trim()},rating:checkedRating(),comments:$('comments').value.trim(),submitted_at:new Date().toISOString(),metric:'satisfaction_0_10'};
+      return {response_id:responseId,campanha:tracker.campaign_id,area_id:tracker.area_id,area:tracker.area,periodo:tracker.data,inicio:tracker.period_start,fim:tracker.period_end,prazo:tracker.deadline,
+        nome:$('respondentName').value.trim(),nota:checkedRating(),comentario:$('comments').value.trim()};
     }
     function confete() {
       if (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) return;
@@ -496,21 +480,15 @@
       if ($('respondentName').value.length > 120 || $('comments').value.length > 3000) { setError('Revise os campos: nome com até 120 caracteres e comentário com até 3.000.'); return; }
       clearError();
       if (demo) { success(true); return; }
-      if (!tracker || !endpoint(config.responseWebhook)) { setError('A conexão da pesquisa não está disponível. Atualize a página e tente novamente.'); return; }
+      if (!tracker || !respostaUrl) { setError('A conexão da pesquisa não está disponível. Atualize a página e tente novamente.'); return; }
       const payload = buildPayload();
       sending = true;
       $('submit').disabled = true; $('back').disabled = true; $('submit').textContent = 'Enviando resposta…';
       $('respondentName').disabled = true; $('comments').disabled = true;
       document.querySelectorAll('input[name="rating"]').forEach(input => { input.disabled = true; });
       try {
-        const {response,json} = await post(endpoint(config.responseWebhook), payload);
-        if (response.status === 409) { unavailable('Esta pesquisa já foi respondida', 'Já existe uma resposta registrada para este convite. Obrigado pela participação da sua área!'); return; }
-        if (response.status === 410) { unavailable('O prazo desta pesquisa terminou', 'O período de recebimento de respostas foi encerrado. Para mais informações, fale com o Programa Educacional.'); return; }
-        if ([401,403,404].includes(response.status)) { setError('Não foi possível validar este convite. Solicite um novo link ao Programa Educacional. Seus campos foram mantidos nesta página.'); return; }
-        if (!response.ok || !json || json.ok !== true || json.response_id !== responseId) {
-          setError('O servidor ainda não confirmou o recebimento. Seus campos foram mantidos; tente enviar novamente.');
-          return;
-        }
+        const {response} = await post(respostaUrl, payload);
+        if (!response.ok) { setError('O envio não foi confirmado. Seus campos foram mantidos; tente enviar novamente.'); return; }
         success(false);
       } catch (error) {
         setError(error.name === 'AbortError' ? 'A confirmação demorou mais que o esperado. Seus campos foram mantidos; tente enviar novamente.' : 'Não conseguimos confirmar o envio. Confira sua conexão e tente novamente; seus campos foram mantidos.');
