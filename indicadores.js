@@ -2,10 +2,13 @@
    ----------------------------------------------------------------------
    Valores da matriz GIBS que NÃO vêm das automações.
 
-   · receita ................. preenchida automaticamente pelo workflow
-                               "Painel PES · 6 · Receita e indicadores".
-                               Não precisa digitar; se você escrever um valor
-                               aqui, a próxima execução o substitui.
+   · receita ................. em R$ mil. Por padrão é preenchida pelo
+                               workflow "Painel PES · 6 · Receita e indicadores".
+                               Com receita_manual: true, o valor digitado manda e
+                               a execução não o substitui; o número calculado pela
+                               API fica gravado ao lado, em receita_api, para você
+                               comparar. Apague receita_manual para voltar ao
+                               automático.
    · margem .................. % da margem (receita ÷ despesas). Vem do
                                financeiro, então é digitada aqui.
    · satisfacao_areas ........ nota da pesquisa de satisfação das áreas
@@ -24,6 +27,8 @@ window.PES_METAS = {
   anos: {
     "2026": {
       informados: {
+        receita: 1015.884,
+        receita_manual: true,
         margem: 87,
         satisfacao_areas: null,
         satisfacao_associados: null
