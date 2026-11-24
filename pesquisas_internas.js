@@ -1,8 +1,8 @@
-/* Painel PES 2.0 · pesquisas_internas.js · gerado pelo n8n em 24/11/2026, 08:56:27 */
+/* Painel PES 2.0 · pesquisas_internas.js · gerado pelo n8n em 24/11/2026, 08:58:09 */
 /* Pesquisas de satisfação das áreas internas com o PES: campanhas[] e respostas[] (nota 0–10 + comentário). O n8n reescreve este arquivo a cada campanha e resposta. */
 window.PES_INTERNAS = {
  "meta": {
-  "gerado_em": "2026-11-24T08:56:27-03:00",
+  "gerado_em": "2026-11-24T08:58:09-03:00",
   "fonte": "Painel PES · n8n (pesquisas internas)",
   "versao": 1
  },
@@ -283,6 +283,18 @@ window.PES_INTERNAS = {
    "nome": "Monica",
    "nota": 9,
    "comentario": "Melhoria da antecedência do prazo de divulgação dos eventos"
+  },
+  {
+   "id": "4c6880d6-1284-4ab3-988a-df2145cc79ee",
+   "response_id": "4c6880d6-1284-4ab3-988a-df2145cc79ee",
+   "invitation_id": "1bbb322b-4946-4fb6-b81d-cc842854daa6:1a797383-04a1-4dc5-8a6c-080b7369acb7",
+   "campanha": "1bbb322b-4946-4fb6-b81d-cc842854daa6",
+   "data": "2026-11-24T08:58:09",
+   "area": "PES",
+   "area_id": "1a797383-04a1-4dc5-8a6c-080b7369acb7",
+   "nome": null,
+   "nota": 10,
+   "comentario": "Sem sugestões no momento."
   }
  ]
 };
