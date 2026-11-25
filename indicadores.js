@@ -29,7 +29,7 @@ window.PES_METAS = {
       informados: {
         receita: 1015.884,
         receita_manual: true,
-        margem: 86,7,
+        margem: 86.7,
         satisfacao_areas: null,
         satisfacao_associados: null
       }
